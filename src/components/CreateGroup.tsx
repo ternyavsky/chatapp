@@ -1,12 +1,20 @@
-import React from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 
-const CreateGroup = () => {
+type GroupMenuProps = {
+  setGroup: (arg: boolean) => void,
+  setSettings: (arg: boolean) => void,
+
+}
+const CreateGroup = ({setGroup, setSettings}: GroupMenuProps) => {
     return (
         <>
             <div className='h-9  bg-[#2D2D2D]  flex mx-auto w-full justify-between'>
-                <img src="/src/assets/arrowl.svg" alt="" className='p-[10px]' width={40} />
+                <img src="/src/assets/arrowl.svg" alt="" className='p-[10px]' width={40} onClick={
+                    () => {
+                        setGroup(false)
+                        setSettings(false)
+                    }} />
                 <div className="flex items-center mx-auto  ">
                     <img src="/src/assets/group.svg" alt="" width={20} />
                     <p className='h1-bold ml-2 font-semibold '>Создание группы</p>
