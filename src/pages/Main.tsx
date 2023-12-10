@@ -8,7 +8,6 @@ const Main = () => {
     const [menu, setMenu] = useState(false);
     return (
         <>
-
             {menu === false && <Header chngMenu={setMenu} />}
 
             {/* <ProfileSideBar /> */}
@@ -18,6 +17,7 @@ const Main = () => {
 
                 <ChatWindow />
             </div>
+
         </>
     )
 }

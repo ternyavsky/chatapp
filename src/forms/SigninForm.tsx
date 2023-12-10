@@ -33,8 +33,8 @@ const SigninForm = () => {
 
     return (
         <>
-            <div className="bg-[#434343] min-h-screen flex flex-col items-center">
-                <img src="src/assets/ISAP.svg" className="pt-10" alt="" width={164} height={78} />
+            <div className="bg-[#434343] min-h-screen flex flex-col items-center overflow-y-scroll relative">
+                <img src="ISAP.svg" className="pt-10" alt="" width={164} height={78} />
                 <div className="min-w-[300px] bg-[#313131]  py-6 mt-10 my-2  rounded-[50px]  md:w-[850px] flex-col flex-center">
                     <h1 className="h1-bold text-1xl font-extrabold md:text-2xl">
                         Вход в мессенджер
@@ -75,9 +75,9 @@ const SigninForm = () => {
                     </Link>
 
                     <div className="flex-center gap-2 mt-3">
-                        <img src="/src/assets/google.svg" alt="" width={30} height={30} />
-                        <img src="/src/assets/tg.svg" alt="" width={30} height={30} />
-                        <img src="/src/assets/vk.svg" alt="" width={30} height={30} />
+                        <img src="google.svg" alt="" width={30} height={30} />
+                        <img src="tg.svg" alt="" width={30} height={30} />
+                        <img src="vk.svg" alt="" width={30} height={30} />
                     </div>
                 </div>
             </div>
