@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Input } from "./ui/input"
 import BlueMessage from "./BlueMessage";
 import GreyMessage from "./GreyMessage";
-import send from "../../public/send.svg"
 
 const ChatWindow = () => {
     const [value, setValue] = useState("");
@@ -43,7 +42,7 @@ const ChatWindow = () => {
 
             <div className="bg-[#333] px-10 py-2 flex gap-2 fixed bottom-0 w-full ">
                 <Input type='search' className='rounded-[50px] bg-[#282828] focus-visible:text-white p-4 ml-5 sm:w-2/5 lg:w-3/5' placeholder='Введите сообщение...' value={value} onChange={(e) => setValue(e.target.value)} />
-                <img src={send} className={`${!value && 'opacity-40'}`} alt="" width={45} />
+                <img src="/send.svg" className={`${!value && 'opacity-40'}`} alt="" width={45} />
 
             </div>
 

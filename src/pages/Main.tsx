@@ -1,9 +1,8 @@
-import ChatWindow from '@/components/ChatWindow'
 import Header from '@/components/Header'
 import LeftBar from '@/components/LeftBar'
 import ProfileSideBar from '@/components/ProfileSideBar'
 import { useState } from 'react'
-import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { Outlet,  useLocation } from 'react-router-dom'
 
 const Main = () => {
     const { pathname } = useLocation();
