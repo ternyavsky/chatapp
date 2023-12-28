@@ -11,30 +11,68 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { CreateUserAccount, Login, TelegramAuth } from "@/api/auth";
+import { useToast } from "@/components/ui/use-toast";
+import { INewUser, TgUser } from "@/shared/types/user.interface";
+import { TLoginButton, TLoginButtonSize } from "react-telegram-auth";
+import { useAuth } from "@/context/AuthContext";
+import { formSchema } from "./validations/SignUpValidation";
+
+
+
 const SignupForm = () => {
-    const formSchema = z.object({
-        username: z.string().min(2, "Ник не может быть короче 2 символов").max(50),
-        password: z.string().min(2, "Пароль не может быть короче 2 символов").max(50),
-        password2: z.string().min(2, "Пароль не может быть короче 2 символов").max(50)
-    }).refine((data) => data.password === data.password2, {
-        message: "Пароли не совпадают",
-        path: ["password2"],
-    });
+    const { toast } = useToast();
+    const { checkAuthUser } = useAuth();
+    const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             username: "",
             password: "",
-            password2: "",
+            password2: ""
         },
     })
 
+    async function tgAuth(user: TgUser) {
+        const tgUser = await TelegramAuth(user)
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+        if (typeof (tgUser) !== "number") {
+            const session = await Login(
+                tgUser?.data.username,
+                tgUser?.data.password
+            )
+            if (session === false) {
+                return toast({
+                    title: "Не удалось вoйти( 😭"
+                })
+            }
+            const isLoggedIn = await checkAuthUser();
+            if (isLoggedIn) navigate("/main")
+        } else if (tgUser === 409) {
+            return toast({ title: "Пользователь с таким ником уже существует!" })
+        } else {
+            return toast({ title: "Не удалось создать аккаунт 😭" })
+        }
+    }
 
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const user: INewUser = {
+            username: values.username,
+            password: values.password,
+            img: null,
+            role: "user"
+        }
+        const newUser = await CreateUserAccount(user);
+
+        if (typeof (newUser) != "number") {
+            navigate("/sign-in")
+        } else if (newUser === 409) {
+            return toast({ title: "Пользователь с таким ником уже существует!" })
+        } else {
+            return toast({ title: "Не удалось создать аккаунт 😭" })
+        }
     }
 
 
@@ -67,7 +105,7 @@ const SignupForm = () => {
                                 <FormItem>
                                     <FormLabel className="label-style">пароль</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Придумайте ваш пароль"{...field} className="rounded-[50px] w-full" />
+                                        <Input placeholder="Придумайте ваш пароль"{...field} className="rounded-[50px] w-full" type="password" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -79,7 +117,7 @@ const SignupForm = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input placeholder="Повторите ваш пароль"{...field} className="rounded-[50px] w-full" />
+                                        <Input placeholder="Повторите ваш пароль"{...field} className="rounded-[50px] w-full" type="password" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -94,9 +132,18 @@ const SignupForm = () => {
                 </Link>
 
                 <div className="flex-center gap-2 mt-3">
-                    <img src="google.svg" alt="" width={30} height={30} />
-                    <img src="tg.svg" alt="" width={30} height={30} />
-                    <img src="vk.svg" alt="" width={30} height={30} />
+                    <TLoginButton
+                        botName="isapchatbot"
+                        buttonSize={TLoginButtonSize.Large}
+                        lang="ru"
+                        usePic={true}
+                        cornerRadius={20}
+                        onAuthCallback={(user) => {
+                            tgAuth(user)
+                        }}
+                        requestAccess={'write'}
+
+                    />
                 </div>
 
             </div>
