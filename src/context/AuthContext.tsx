@@ -1,6 +1,7 @@
 
 import { GetCurrentUser } from "@/api/auth";
-import { getCookie } from "@/helpers/cookie";
+import { IChat } from "@/shared/types/chat.interface";
+import { IMessage } from "@/shared/types/message.interface";
 import { IUser } from "@/shared/types/user.interface";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,14 +17,35 @@ interface IContextType {
     checkAuthUser: () => Promise<boolean>;
 };
 
-const INITIAL_USER: IUser = {
+
+
+export const INITIAL_USER: IUser = {
     id: "",
     username: "",
     password: "",
+    online: false,
     img: "",
     role: "",
     created_at: new Date(),
     updated_at: new Date()
+}
+
+
+export const INITIAL_MESSAGE: IMessage = {
+    id: "",
+    author: INITIAL_USER,
+    text: "",
+    created_at: new Date(),
+    updated_at: new Date(),
+}
+
+export const INITIAL_CHAT: IChat = {
+    id: "",
+    messages: [INITIAL_MESSAGE],
+    created_at: new Date(),
+    updated_at: new Date(),
+    title: "",
+    members: [INITIAL_USER]
 }
 
 
@@ -45,12 +67,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const checkAuthUser = async () => {
         try {
             const currAcc = await GetCurrentUser()
-
             if (currAcc) {
                 setUser({
-                    id: currAcc.username,
+                    id: currAcc.id,
                     username: currAcc.username,
                     password: currAcc.password,
+                    online: currAcc.online,
                     img: currAcc.img,
                     role: currAcc.role,
                     created_at: currAcc.created_at,
@@ -72,7 +94,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (getCookie('access_token') == undefined)
+        if (localStorage.getItem('access_token') == undefined)
             navigate("/")
 
         checkAuthUser();

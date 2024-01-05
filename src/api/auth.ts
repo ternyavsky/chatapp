@@ -1,7 +1,6 @@
 import { INewUser, IUser, TgUser } from "@/shared/types/user.interface";
 import { instance } from "./config";
 import { AxiosError, AxiosResponse } from "axios";
-import { getCookie, setCookie } from "@/helpers/cookie";
 import { IToken } from "@/shared/types/token.interface";
 
 export async function CreateUserAccount(
@@ -42,7 +41,7 @@ export async function TelegramAuth(
 
 export async function changeUser(username: string) {
     try {
-        const token = getCookie("access_token")
+        const token = localStorage.getItem("access_token")
         const newUser = await instance.put(`api/user/${username}/`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -66,7 +65,7 @@ export async function Login(
         })
         const token_data = token.data
         console.log(token_data)
-        setCookie("access_token", token_data["access_token"])
+        localStorage.setItem("access_token", token_data["access_token"])
         return token_data
     } catch (error) {
         return false
@@ -76,8 +75,8 @@ export async function Login(
 }
 
 
-export async function GetCurrentUser() {
-    const token = getCookie("access_token")
+export async function GetCurrentUser(): Promise<IUser | null> {
+    const token = localStorage.getItem("access_token")
     try {
         const user = await instance.get("/api/user", {
             headers: {

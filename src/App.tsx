@@ -1,14 +1,31 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useBeforeUnload } from 'react-router-dom'
 
 import Home from '@/components/Home'
-import SigninForm from './forms/SigninForm'
-import { Toaster } from './components/ui/toaster'
-import SignupForm from './forms/SignupForm'
-import Main from './pages/Main'
-import ChatWindow from './components/ChatWindow'
-import AuthLayout from './pages/AuthLayout'
+import SigninForm from '@/forms/SigninForm'
+import { Toaster } from '@/components/ui/toaster'
+import SignupForm from '@/forms/SignupForm'
+import Main from '@/pages/Main'
+import ChatWindow from '@/components/ChatWindow'
+import AuthLayout from '@/pages/AuthLayout'
+import { connectCall, disconnectCall, socket } from './api/ws'
+import { useEffect } from 'react'
+import { useAuth } from './context/AuthContext'
+import UserWindow from './components/UserWindow'
 
 function App() {
+  const { user } = useAuth();
+  connectCall()
+  useEffect(() => {
+    socket.on("connectCall", (e) => {
+      user.online = e.online
+    })
+  }, [socket])
+
+  useBeforeUnload(() => {
+    disconnectCall()
+    user.online = false
+  })
+
   return (
     <>
 
@@ -20,6 +37,7 @@ function App() {
         </Route>
         <Route element={<Main />} path={'/main'}>
           <Route element={<ChatWindow />} path={"/main/:id"} />
+          <Route element={<UserWindow />} path={"/main/n/:username"} />
         </Route>
       </Routes>
 

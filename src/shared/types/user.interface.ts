@@ -3,7 +3,8 @@ import { IBase } from "./base.interface";
 export interface IUser extends IBase {
     username: string,
     password: string,
-    img: string | null,
+    img: string | undefined,
+    online: boolean,
     role: string,
 }
 
