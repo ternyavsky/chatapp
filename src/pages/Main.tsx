@@ -1,18 +1,15 @@
 import Header from '@/components/Header'
 import LeftBar from '@/components/LeftBar'
 import ProfileSideBar from '@/components/ProfileSideBar'
-import { useEffect, useRef, useState, } from 'react'
+import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { CSSTransition } from 'react-transition-group'
-import { motion, useTransform } from "framer-motion"
-import { animated, useTransition } from '@react-spring/web'
+import {  useTransition } from '@react-spring/web'
 import "./styles.css"
 
 
 const Main = () => {
     const { pathname } = useLocation();
     const [menu, setMenu] = useState<boolean>(false);
-    const [searchState, setSearchState] = useState<boolean>(false)
     const [searchValue, setSearchValue] = useState<string>("")
     const transition = useTransition(menu, {
         from: { x: -50, y: 0, opacity: 0 },
@@ -21,10 +18,6 @@ const Main = () => {
         config: { duration: 100 }
 
     })
-    useEffect(() => {
-        console.log("set")
-    }, [menu])
-
     return (
         <>
             <div className="">

@@ -1,6 +1,3 @@
-import { INITIAL_CHAT, INITIAL_USER, useAuth } from "@/context/AuthContext";
-import { getMember } from "@/helpers/memberFromChat";
-import { IChat } from "@/shared/types/chat.interface";
 import { FC, useEffect, useState } from "react";
 import { useBeforeUnload, useLocation, useNavigate } from "react-router-dom"
 import { socket } from "@/api/ws";
@@ -9,39 +6,16 @@ import { useUserRightUpSideQuery } from "../lib/hooks/useUserRightUpSide";
 
 const UserRightUpSide: FC = () => {
     const { pathname } = useLocation();
-    const [chat, setChat] = useState<IChat>(INITIAL_CHAT)
-    const { user } = useAuth();
     const { data } = useUserRightUpSideQuery(pathname.slice(8));
     const [typingState, setTypingState] = useState<boolean>(false);
     const [member, setMember] = useState<IUser | null>()
-    // letmember = getMember(chat);
     useBeforeUnload(() => setTypingState(false))
-
     useEffect(() => {
-        
         setMember(data?.data)
-        console.log("right side effect")
-
-
-        // socket.on("connectCall", () => {
-        // })
-        // socket.on("disconnectCall", () => {
-        //     user.username === member?.username && setTypingState(() => false)
-        // })
-        // socket.on("createMessage", () => setTypingState(false))
-        // socket.on("typing", (user: IUser) => {
-        //     console.log('typing', user.username)
-        //     console.log("member", member.username)
-        //     user.username === member?.username && setTypingState(() => true); console.log("changed")
-        // })
-
     }, [data, socket, member, pathname])
-
     const navigate = useNavigate();
-
     return (
         <>
-
             <div className={` bg-[#302F2F] ${pathname !== "/main" ? "flex w-screen" : "sm:w-screen"} `}>
                 {pathname !== "/main" &&
                     <>

@@ -1,6 +1,4 @@
-import { INITIAL_CHAT, INITIAL_USER, useAuth } from "@/context/AuthContext";
-import { getMember } from "@/helpers/memberFromChat";
-import { IChat } from "@/shared/types/chat.interface";
+import {  INITIAL_USER, useAuth } from "@/context/AuthContext";
 import { FC, useEffect, useState } from "react";
 import { useBeforeUnload, useLocation, useNavigate } from "react-router-dom"
 import { useRightUpSideQuery } from "../lib/hooks/useRightUpSideQuery";
@@ -9,25 +7,15 @@ import { IUser } from "@/shared/types/user.interface";
 
 const RightUpSide: FC = () => {
     const { pathname } = useLocation();
-    const [chat, setChat] = useState<IChat>(INITIAL_CHAT)
     const { user } = useAuth();
     const { data, refetch } = useRightUpSideQuery();
     const [typingState, setTypingState] = useState<boolean>(false);
     const [member, setMember] = useState<IUser>(INITIAL_USER)
-    // letmember = getMember(chat);
     useBeforeUnload(() => setTypingState(false))
-
     useEffect(() => {
-
-        console.log("right side effect")
-        data?.data?.map(e => {
-            pathname === `/main/${e.id}` && setChat(e)
-        })
         data?.data?.map(e => {
             pathname === `/main/${e.id}` ? e.members.length <= 2 && e.members[0].username === user.username ? setMember(e.members[1]) : setMember(e.members[0]) : console.log(e);
-
         })
-
         socket.on("connectCall", () => {
             refetch()
         })

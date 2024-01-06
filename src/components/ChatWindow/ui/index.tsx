@@ -1,22 +1,20 @@
-import { FC, useCallback, useEffect, useReducer, useRef, useState } from "react"
+import { FC,  useEffect,  useState } from "react"
 import { Input } from "@/components/ui/input";
 import send from "./assets/send.svg"
 import BlueMessage from "@/components/BlueMessage";
 import GreyMessage from "@/components/GreyMessage";
-import { useBeforeUnload, useLocation } from "react-router-dom";
-import { INITIAL_CHAT, INITIAL_MESSAGE, useAuth } from "@/context/AuthContext";
+import {  useLocation } from "react-router-dom";
+import { INITIAL_CHAT,  useAuth } from "@/context/AuthContext";
 import { IChat } from "@/shared/types/chat.interface";
 import { handleTyping, sendMessage, socket } from "@/api/ws";
 import { IMessage } from "@/shared/types/message.interface";
 import { useChatWindowQuery } from "../lib/hooks/useChatWindowQuery";
-import { filterMessageByDate } from "@/helpers/filterMessageByDate";
 
 const ChatWindow: FC = () => {
     const { user } = useAuth();
     const { pathname } = useLocation();
     const { data, refetch } = useChatWindowQuery();
     const [value, setValue] = useState<string>("");
-    const lastMessageRef = useRef<null | HTMLDivElement>(null);
     const [chat, setChat] = useState<IChat>(INITIAL_CHAT)
     const [messages, setMessages] = useState<IMessage[] | null>([]);
 
@@ -33,6 +31,14 @@ const ChatWindow: FC = () => {
             pathname === `/main/${e.id}` && setChat(e)
         })
     }, [data, socket, pathname])
+
+    const enterKey = (e) => {
+        if (e.key === "Enter") {
+            sendMessage({ author: user, chat: chat, text: value })
+            setValue("")
+        }
+    }
+
     return (
         <div className='bg-[#282828] w-full flex items-end h-fit'>
             <div className="overflow-y-scroll relative p-3 h-screen w-full pb-[200px] flex flex-col" >
@@ -50,13 +56,17 @@ const ChatWindow: FC = () => {
                     placeholder='Введите сообщение...'
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    onKeyDown={handleTyping}
+                    onKeyDown={(e) => {
+                        handleTyping
+                        enterKey(e)
+                    }}
                 />
                 <img
                     src={send}
                     className={`${!value ? 'hidden' : "cursor-pointer hover:opacity-50"} `}
                     alt="send"
                     width={45}
+                    onKeyDown={enterKey}
                     onClick={() => {
                         sendMessage({ author: user, chat: chat, text: value })
                         setValue("")

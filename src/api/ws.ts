@@ -2,11 +2,11 @@ import { ICreateMessage, IFirstMessage, IMessage } from "@/shared/types/message.
 import { IUser } from "@/shared/types/user.interface"
 import { io } from "socket.io-client"
 
-const baseURL = "http://213.171.10.182:8000"
-// const baseURL = "http://localhost:8000"
+// const baseURL = "http://213.171.10.182:8000"
+const baseURL = "http://localhost:8000"
 
 
-export const socket = io(baseURL, {
+export const socket = io(baseURL, { 
     extraHeaders: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`
     },

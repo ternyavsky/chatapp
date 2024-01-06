@@ -21,7 +21,6 @@ const ChatWidget = (props: widgetProps) => {
     const minute = dateCreateLastMessage.getMinutes() < 10 ? `0${dateCreateLastMessage.getMinutes()}` : dateCreateLastMessage.getMinutes()
     useEffect(() => {
         setLastMessage(getLastMessage(props.chat))
-        console.log("call chat widget")
     }, [props.chat])
 
     return (

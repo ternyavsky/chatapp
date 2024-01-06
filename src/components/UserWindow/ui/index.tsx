@@ -1,26 +1,16 @@
-import { FC, useCallback, useEffect, useReducer, useRef, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { Input } from "@/components/ui/input";
 import send from "./assets/send.svg"
-import BlueMessage from "@/components/BlueMessage";
-import GreyMessage from "@/components/GreyMessage";
-import { useBeforeUnload, useLocation, useNavigate } from "react-router-dom";
-import { INITIAL_CHAT, INITIAL_MESSAGE, useAuth } from "@/context/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
 import { IChat } from "@/shared/types/chat.interface";
-import { handleTyping, sendFirstMessage, sendMessage, socket } from "@/api/ws";
-import { IMessage } from "@/shared/types/message.interface";
-import { filterMessageByDate } from "@/helpers/filterMessageByDate";
+import { handleTyping, sendFirstMessage, socket } from "@/api/ws";
 import { useUserWindowQuery } from "../lib/hooks/useUserWindow";
 import { IUser } from "@/shared/types/user.interface";
-import { useLeftBarQuery } from "@/components/LeftBar/lib/hooks/useLeftBarQuery";
 import { useGetChatsQuery } from "../lib/hooks/useGetChats";
-import { useGetUsersQuery } from "../lib/hooks/useGetUsers";
-
 const UserWindow: FC = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const { pathname } = useLocation();
     const { refetch: leftbar } = useGetChatsQuery();
-    const { refetch: usersRefetch } = useGetUsersQuery();
     const memberUsername = pathname.slice(8)
     const { data } = useUserWindowQuery(memberUsername)
     const [value, setValue] = useState<string>("");
@@ -30,7 +20,6 @@ const UserWindow: FC = () => {
         socket.on("createFirstMessage", (chat: IChat) => {
             leftbar()
             navigate(`/main/${chat.id}`)
-
         })
         leftbar()
         data && setMember(data.data)
@@ -57,6 +46,12 @@ const UserWindow: FC = () => {
                     className={`${!value ? 'hidden' : "cursor-pointer hover:opacity-50"} `}
                     alt="send"
                     width={45}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            sendFirstMessage(member!, { author: member!, text: value })
+                            setValue("")
+                        }
+                    }}
                     onClick={() => {
                         sendFirstMessage(member!, { author: member!, text: value })
                         setValue("")
