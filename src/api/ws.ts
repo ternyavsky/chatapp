@@ -2,7 +2,7 @@ import { ICreateMessage, IFirstMessage, IMessage } from "@/shared/types/message.
 import { IUser } from "@/shared/types/user.interface"
 import { io } from "socket.io-client"
 
-export const socket = io("http://213.171.10.182:8000", {
+export const socket = io("http://127.0.0.1:8000", {
     extraHeaders: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`
     },

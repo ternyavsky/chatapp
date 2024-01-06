@@ -20,13 +20,14 @@ const ChatWindow: FC = () => {
     const [chat, setChat] = useState<IChat>(INITIAL_CHAT)
     const [messages, setMessages] = useState<IMessage[] | null>([]);
 
+
     useEffect(() => {
         socket.on("createMessage", () => {
             refetch()
 
         })
         data?.data?.map(e => {
-            pathname === `/main/${e.id}` && setMessages(filterMessageByDate(e.messages))
+            pathname === `/main/${e.id}` && setMessages(e.messages)
         })
         data?.data?.map(e => {
             pathname === `/main/${e.id}` && setChat(e)

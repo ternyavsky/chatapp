@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import send from "./assets/send.svg"
 import BlueMessage from "@/components/BlueMessage";
 import GreyMessage from "@/components/GreyMessage";
-import { useBeforeUnload, useLocation } from "react-router-dom";
+import { useBeforeUnload, useLocation, useNavigate } from "react-router-dom";
 import { INITIAL_CHAT, INITIAL_MESSAGE, useAuth } from "@/context/AuthContext";
 import { IChat } from "@/shared/types/chat.interface";
 import { handleTyping, sendFirstMessage, sendMessage, socket } from "@/api/ws";
@@ -17,6 +17,7 @@ import { useGetUsersQuery } from "../lib/hooks/useGetUsers";
 
 const UserWindow: FC = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const { pathname } = useLocation();
     const { refetch: leftbar } = useGetChatsQuery();
     const { refetch: usersRefetch } = useGetUsersQuery();
@@ -26,13 +27,13 @@ const UserWindow: FC = () => {
     const [member, setMember] = useState<IUser | null>()
 
     useEffect(() => {
-        socket.on("createFirstMessage", () => {
+        socket.on("createFirstMessage", (chat: IChat) => {
             leftbar()
+            navigate(`/main/${chat.id}`)
+
         })
         leftbar()
         data && setMember(data.data)
-        // usersRefetch();
-        console.log("AU")
     }, [data])
     return (
         <div className='bg-[#282828] w-full flex items-end h-fit'>

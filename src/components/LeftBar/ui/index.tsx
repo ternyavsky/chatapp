@@ -25,7 +25,7 @@ const LeftBar = ({ searchValue, setSearchValue }: leftbarProps) => {
     useEffect(() => {
         console.log(users)
         chatsData && setChats(filterChatByLastMessage(chatsData?.data))
-        usersData && setUsers(usersData?.data)
+        usersData && setUsers(usersData?.data.filter(user => chats?.map(chat => chat.members.includes(user))))
         searchValue.length > 0 ? setSearchState(false) : setSearchState(true) 
     }, [chatsData, usersData, searchValue])
     return (
