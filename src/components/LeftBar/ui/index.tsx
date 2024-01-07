@@ -35,6 +35,7 @@ const LeftBar = ({ searchValue, setSearchValue }: leftbarProps) => {
             leftbar()
 
         })
+        socket.on("createFirstMessage", () => leftbar())
     }, [chatsData, usersData, searchValue, socket])
     chats?.map(chat => chat.members.map(user => chatMembers.push(user.username)))
     return (

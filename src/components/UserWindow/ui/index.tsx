@@ -23,7 +23,7 @@ const UserWindow: FC = () => {
         })
         leftbar()
         data && setMember(data.data)
-    }, [data])
+    }, [data, socket])
     return (
         <div className='bg-[#282828] w-full flex items-end h-fit'>
             <div className='bg-[#282828] hidden sm:w-full sm:flex sm:items-end h-screen'>
