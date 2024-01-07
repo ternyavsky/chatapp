@@ -25,9 +25,7 @@ const RightUpSide: FC = () => {
         })
         socket.on("createMessage", () => setTypingState(false))
         socket.on("typing", (user: IUser) => {
-            console.log('typing', user.username)
-            console.log("member", member.username)
-            user.username === member?.username && setTypingState(() => true); console.log("changed")
+            user.username === member?.username && setTypingState(() => true); 
         })
 
     }, [data, socket, member, pathname])

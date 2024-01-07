@@ -28,7 +28,6 @@ export async function getUserByUsername(
 
 export async function getAllUsers(
 ): Promise<AxiosResponse<IUser[]>> {
-    console.log('call users')
     const token = localStorage.getItem("access_token")
     return await instance.get("/api/users", {
         headers: {

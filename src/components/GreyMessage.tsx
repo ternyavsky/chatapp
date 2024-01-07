@@ -6,7 +6,7 @@ type greyMessageProps = {
 
 const GreyMessage = ({ message}: greyMessageProps) => {
   const dateCreateLastMessage = new Date(message?.created_at!)
-  const hour = dateCreateLastMessage.getHours() + 3
+  const hour = dateCreateLastMessage.getHours()
   const minute = dateCreateLastMessage.getMinutes() < 10 ? `0${dateCreateLastMessage.getMinutes()}` : dateCreateLastMessage.getMinutes()
   return (
     <div className="items-end">

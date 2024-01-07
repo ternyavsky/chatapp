@@ -1,10 +1,10 @@
-import { FC,  useEffect,  useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { Input } from "@/components/ui/input";
 import send from "./assets/send.svg"
 import BlueMessage from "@/components/BlueMessage";
 import GreyMessage from "@/components/GreyMessage";
-import {  useLocation } from "react-router-dom";
-import { INITIAL_CHAT,  useAuth } from "@/context/AuthContext";
+import { useLocation } from "react-router-dom";
+import { INITIAL_CHAT, useAuth } from "@/context/AuthContext";
 import { IChat } from "@/shared/types/chat.interface";
 import { handleTyping, sendMessage, socket } from "@/api/ws";
 import { IMessage } from "@/shared/types/message.interface";
@@ -22,7 +22,12 @@ const ChatWindow: FC = () => {
     useEffect(() => {
         socket.on("createMessage", () => {
             refetch()
-
+        })
+        socket.on("connectCall", () => {
+            refetch()
+        })
+        socket.on("disconnectCall", () => {
+            refetch()
         })
         data?.data?.map(e => {
             pathname === `/main/${e.id}` && setMessages(e.messages)
@@ -57,7 +62,7 @@ const ChatWindow: FC = () => {
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     onKeyDown={(e) => {
-                        handleTyping
+                        handleTyping()
                         enterKey(e)
                     }}
                 />
@@ -66,7 +71,6 @@ const ChatWindow: FC = () => {
                     className={`${!value ? 'hidden' : "cursor-pointer hover:opacity-50"} `}
                     alt="send"
                     width={45}
-                    onKeyDown={enterKey}
                     onClick={() => {
                         sendMessage({ author: user, chat: chat, text: value })
                         setValue("")

@@ -2,6 +2,7 @@ import { INewUser, IUser, TgUser } from "@/shared/types/user.interface";
 import { instance } from "./config";
 import { AxiosError, AxiosResponse } from "axios";
 import { IToken } from "@/shared/types/token.interface";
+import { connectCall, socket } from "./ws";
 
 export async function CreateUserAccount(
     user: INewUser
@@ -66,6 +67,7 @@ export async function Login(
         const token_data = token.data
         console.log(token_data)
         localStorage.setItem("access_token", token_data["access_token"])
+        socket.disconnect()
         return token_data
     } catch (error) {
         return false

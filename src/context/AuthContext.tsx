@@ -1,5 +1,6 @@
 
 import { GetCurrentUser } from "@/api/auth";
+import { connectCall } from "@/api/ws";
 import { IChat } from "@/shared/types/chat.interface";
 import { IMessage } from "@/shared/types/message.interface";
 import { IUser } from "@/shared/types/user.interface";
@@ -79,6 +80,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     updated_at: currAcc.updated_at
 
                 })
+               
                 setIsAuth(true)
                 return true
             }
@@ -89,6 +91,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         finally {
             setIsLoading(false)
+            connectCall()
         }
     }
     const navigate = useNavigate();

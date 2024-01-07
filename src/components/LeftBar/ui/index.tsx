@@ -8,6 +8,7 @@ import { useGetUsersQuery } from '../lib/hooks/useGetUsers';
 import { IUser } from '@/shared/types/user.interface';
 import UserWidget from '@/components/UserWidget';
 import { INITIAL_USER, useAuth } from '@/context/AuthContext';
+import { socket } from '@/api/ws';
 
 type leftbarProps = {
     searchValue: string
@@ -17,7 +18,7 @@ type leftbarProps = {
 const LeftBar = ({ searchValue, setSearchValue }: leftbarProps) => {
     const { pathname } = useLocation();
     const { user: aUser } = useAuth();
-    const { data: chatsData } = useLeftBarQuery();
+    const { data: chatsData, refetch: leftbar } = useLeftBarQuery();
     const { data: usersData, refetch: userref } = useGetUsersQuery();
     const [chats, setChats] = useState<IChat[] | null>()
     const [searchState, setSearchState] = useState<boolean>(true)
@@ -27,7 +28,14 @@ const LeftBar = ({ searchValue, setSearchValue }: leftbarProps) => {
         chatsData && setChats(filterChatByLastMessage(chatsData?.data))
         usersData && setUsers(usersData?.data)
         searchValue.length > 0 ? setSearchState(false) : setSearchState(true)
-    }, [chatsData, usersData, searchValue])
+        socket.on("connectCall", () => {
+            leftbar()
+        })
+        socket.on("disconnectCall", () => {
+            leftbar()
+
+        })
+    }, [chatsData, usersData, searchValue, socket])
     chats?.map(chat => chat.members.map(user => chatMembers.push(user.username)))
     return (
         <>
@@ -42,7 +50,7 @@ const LeftBar = ({ searchValue, setSearchValue }: leftbarProps) => {
                         :
                         <div className="">
                             {
-                                users?.filter(user => user.username.includes(searchValue) && chatMembers?.includes(user.username) === false && user.username !== aUser.username).map(e => (
+                                users?.filter(user => user.username.toLowerCase().includes(searchValue.toLowerCase()) && chatMembers?.includes(user.username) === false && user.username !== aUser.username).map(e => (
                                     <div className="" onClick={() => setSearchValue("")}>
                                         <UserWidget user={e} />
                                     </div>))

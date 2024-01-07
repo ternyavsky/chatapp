@@ -17,7 +17,7 @@ const ChatWidget = (props: widgetProps) => {
     const [lastMessage, setLastMessage] = useState<IMessage | undefined>(INITIAL_MESSAGE)
     const member = getMember(props.chat);
     const dateCreateLastMessage = new Date(lastMessage?.created_at!)
-    const hour = dateCreateLastMessage.getHours() + 3
+    const hour = dateCreateLastMessage.getHours()
     const minute = dateCreateLastMessage.getMinutes() < 10 ? `0${dateCreateLastMessage.getMinutes()}` : dateCreateLastMessage.getMinutes()
     useEffect(() => {
         setLastMessage(getLastMessage(props.chat))

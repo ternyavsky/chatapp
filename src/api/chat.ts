@@ -1,6 +1,7 @@
 import { AxiosError, AxiosResponse } from "axios"
 import { instance } from "./config"
 import { IChat } from "@/shared/types/chat.interface"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 export async function getUserChats(
 ): Promise<AxiosResponse<IChat[]>> {
@@ -13,4 +14,12 @@ export async function getUserChats(
     })
     return chats
 
+}
+
+
+export const useChatWindowQuery = () => {
+    return useQuery({
+        queryFn: () => getUserChats(),
+        queryKey: ["chats"],
+    })
 }

@@ -7,6 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Login, changeUser } from '@/api/auth'
 import { useToast } from './ui/use-toast'
+import { baseURL, connectCall, disconnectCall, socket } from '@/api/ws'
+import { useEffect } from 'react'
+import { useChatWindowQuery } from '@/api/chat'
+import { redirect, useNavigate } from 'react-router-dom'
+import { io } from 'socket.io-client'
 
 type NameMenuProps = {
     setGroup: (arg: boolean) => void,
@@ -16,6 +21,7 @@ type NameMenuProps = {
 }
 const ChangeName = ({ setGroup, setSettings, setMenu }: NameMenuProps) => {
     const { user, checkAuthUser } = useAuth();
+    const navigate = useNavigate();
     const { toast } = useToast();
     const formSchema = z.object({
         username: z.string().min(2, "Ник не может быть короче 2 символов").max(50),
@@ -34,10 +40,15 @@ const ChangeName = ({ setGroup, setSettings, setMenu }: NameMenuProps) => {
         }
         await Login(newUser.username, newUser.password)
         await checkAuthUser()
+
         setGroup(false);
         setSettings(false);
         setMenu(false)
+        console.log('submit')
+        window.location.reload()
+
     }
+
     return (<>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="">
@@ -58,10 +69,9 @@ const ChangeName = ({ setGroup, setSettings, setMenu }: NameMenuProps) => {
                     variant={"outline"}
                     type="submit"
                     className='rounded-[50px] bg-inherit border-[3px] h1-bold flex-center font-semibold w-52 mx-auto mt-4'
-                    onClick={() => {
 
-                    }}>
-                    Submit
+                >
+Изменить ник
                 </Button>
             </form>
         </Form>

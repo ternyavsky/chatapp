@@ -2,11 +2,11 @@ import { ICreateMessage, IFirstMessage, IMessage } from "@/shared/types/message.
 import { IUser } from "@/shared/types/user.interface"
 import { io } from "socket.io-client"
 
-const baseURL = "http://213.171.10.182:8000"
-// const baseURL = "http://localhost:8000"
+export const baseURL = "http://213.171.10.182:8000"
+// export const baseURL = "http://localhost:8000"
 
 
-export const socket = io(baseURL, { 
+export const socket = io(baseURL, {
     extraHeaders: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`
     },
@@ -15,7 +15,7 @@ export const socket = io(baseURL, {
 
 
 export const sendFirstMessage = async (user: IUser, message: IFirstMessage) => {
-    socket.emit("createFirstMessage", {user, message})
+    socket.emit("createFirstMessage", { user, message })
 }
 
 export const sendMessage = async (message: ICreateMessage) => {
@@ -31,4 +31,8 @@ export const handleTyping = async () => {
 
 export const disconnectCall = async () => {
     socket.emit("disconnectCall")
+}
+
+export const changeName = async (username: string) => {
+    socket.emit("changeUsername")
 }
