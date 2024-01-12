@@ -19,6 +19,7 @@ import { TLoginButton, TLoginButtonSize } from "react-telegram-auth"
 import { useToast } from "@/components/ui/use-toast"
 import { TgUser } from "@/shared/types/user.interface"
 import { formSchema } from "./validations/SignInValidation"
+import { connectCall } from "@/api/ws"
 const SigninForm = () => {
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -67,12 +68,16 @@ const SigninForm = () => {
         const isLoggedIn = await checkAuthUser();
         if (isLoggedIn) {
             form.reset();
+            await connectCall()
+            window.location.reload()
             navigate("/main")
+            
         } else {
             return toast({
                 title: "Не удалось создать аккаунт. Попробуйте позже."
             })
         }
+        
     }
 
     return (

@@ -1,3 +1,4 @@
+import { disconnectCall } from "@/api/ws";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom"
 
@@ -11,10 +12,11 @@ type ProfileMenuProps = {
 
 const ProfileMenu = ({ setGroup, setSettings }: ProfileMenuProps) => {
   const navigate = useNavigate();
-  const { setIsAuth } = useAuth();
+  const { setIsAuth, user } = useAuth();
   const logout = () => {
     localStorage.removeItem("access_token")
     setIsAuth(false)
+    disconnectCall()
     navigate("/sign-in")
   }
 

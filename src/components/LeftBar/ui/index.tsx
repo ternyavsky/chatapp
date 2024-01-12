@@ -9,6 +9,8 @@ import { IUser } from '@/shared/types/user.interface';
 import UserWidget from '@/components/UserWidget';
 import { INITIAL_USER, useAuth } from '@/context/AuthContext';
 import { socket } from '@/api/ws';
+import { useChats } from '@/store/useChat';
+import { useUsers } from '@/store/useUsers';
 
 type leftbarProps = {
     searchValue: string
@@ -18,25 +20,18 @@ type leftbarProps = {
 const LeftBar = ({ searchValue, setSearchValue }: leftbarProps) => {
     const { pathname } = useLocation();
     const { user: aUser } = useAuth();
-    const { data: chatsData, refetch: leftbar } = useLeftBarQuery();
-    const { data: usersData, refetch: userref } = useGetUsersQuery();
-    const [chats, setChats] = useState<IChat[] | null>()
+    const { chats, fetchChats } = useChats();
+    const { users } = useUsers();
     const [searchState, setSearchState] = useState<boolean>(true)
-    const [users, setUsers] = useState<IUser[] | undefined>([INITIAL_USER])
+    // const [users, setUsers] = useState<IUser[] | undefined>([INITIAL_USER])
+   
     let chatMembers: string[] = [""]
     useEffect(() => {
-        chatsData && setChats(filterChatByLastMessage(chatsData?.data))
-        usersData && setUsers(usersData?.data)
+        console.log(chats)
+        // usersData && setUsers(usersData?.data)
         searchValue.length > 0 ? setSearchState(false) : setSearchState(true)
-        socket.on("connectCall", () => {
-            leftbar()
-        })
-        socket.on("disconnectCall", () => {
-            leftbar()
 
-        })
-        socket.on("createFirstMessage", () => leftbar())
-    }, [chatsData, usersData, searchValue, socket])
+    }, [searchValue])
     chats?.map(chat => chat.members.map(user => chatMembers.push(user.username)))
     return (
         <>

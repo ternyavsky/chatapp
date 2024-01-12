@@ -12,7 +12,7 @@ type widgetProps = {
     chat: IChat
 }
 
-const ChatWidget = (props: widgetProps) => {
+const   ChatWidget = (props: widgetProps) => {
     const { user } = useAuth();
     const [lastMessage, setLastMessage] = useState<IMessage | undefined>(INITIAL_MESSAGE)
     const member = getMember(props.chat);
@@ -31,7 +31,7 @@ const ChatWidget = (props: widgetProps) => {
                         src={member?.img ? member?.img : bilan} alt="profile" width={80} className="rounded-full"
                     />
                     {
-                        member?.online && <img src="/online.svg" alt="online" className='absolute top-11 left-[3.4rem] ' width={18} />
+                        member?.online && <img src="/online.svg" alt="online" className='absolute top-16 left-[4.2rem] ' width={18} />
                     }
 
                     <div className="flex-col ">

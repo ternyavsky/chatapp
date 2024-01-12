@@ -7,10 +7,11 @@ import { handleTyping, sendFirstMessage, socket } from "@/api/ws";
 import { useUserWindowQuery } from "../lib/hooks/useUserWindow";
 import { IUser } from "@/shared/types/user.interface";
 import { useGetChatsQuery } from "../lib/hooks/useGetChats";
+import { useChats } from "@/store/useChat";
 const UserWindow: FC = () => {
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { refetch: leftbar } = useGetChatsQuery();
+    const { fetchChats } = useChats();
     const memberUsername = pathname.slice(8)
     const { data } = useUserWindowQuery(memberUsername)
     const [value, setValue] = useState<string>("");
@@ -18,12 +19,24 @@ const UserWindow: FC = () => {
 
     useEffect(() => {
         socket.on("createFirstMessage", (chat: IChat) => {
-            leftbar()
+            fetchChats();
             navigate(`/main/${chat.id}`)
         })
-        leftbar()
         data && setMember(data.data)
     }, [data, socket])
+
+    const sendMessage = () => {
+        sendFirstMessage(member!, { author: member!, text: value })
+        setValue("")
+
+    }
+    const enterKey = (e) => {
+        if (e.key === "Enter") {
+            sendFirstMessage(member!, { author: member!, text: value })
+            setValue("")
+        }
+    }
+
     return (
         <div className='bg-[#282828] w-full flex items-end h-fit'>
             <div className='bg-[#282828] hidden sm:w-full sm:flex sm:items-end h-screen'>
@@ -39,22 +52,21 @@ const UserWindow: FC = () => {
                     placeholder='Введите сообщение...'
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    onKeyDown={handleTyping}
+                    onKeyDown={(e) => {
+                        handleTyping(),
+                            enterKey(e)
+                    }
+                    
+                    }
                 />
                 <img
                     src={send}
                     className={`${!value ? 'hidden' : "cursor-pointer hover:opacity-50"} `}
                     alt="send"
                     width={45}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            sendFirstMessage(member!, { author: member!, text: value })
-                            setValue("")
-                        }
-                    }}
+
                     onClick={() => {
-                        sendFirstMessage(member!, { author: member!, text: value })
-                        setValue("")
+                        sendMessage();
                     }}
                 />
             </div>

@@ -9,11 +9,12 @@ import { IChat } from "@/shared/types/chat.interface";
 import { handleTyping, sendMessage, socket } from "@/api/ws";
 import { IMessage } from "@/shared/types/message.interface";
 import { useChatWindowQuery } from "../lib/hooks/useChatWindowQuery";
+import { useChats } from "@/store/useChat";
 
 const ChatWindow: FC = () => {
     const { user } = useAuth();
     const { pathname } = useLocation();
-    const { data, refetch } = useChatWindowQuery();
+    const { chats, fetchChats} = useChats();
     const [value, setValue] = useState<string>("");
     const [chat, setChat] = useState<IChat>(INITIAL_CHAT)
     const [messages, setMessages] = useState<IMessage[] | null>([]);
@@ -21,21 +22,15 @@ const ChatWindow: FC = () => {
 
     useEffect(() => {
         socket.on("createMessage", () => {
-            refetch()
+            fetchChats();
         })
-        socket.on("connectCall", () => {
-            refetch()
-        })
-        socket.on("disconnectCall", () => {
-            refetch()
-        })
-        data?.data?.map(e => {
+        chats?.map(e => {
             pathname === `/main/${e.id}` && setMessages(e.messages)
         })
-        data?.data?.map(e => {
+        chats?.map(e => {
             pathname === `/main/${e.id}` && setChat(e)
         })
-    }, [data, socket, pathname])
+    }, [chats])
 
     const enterKey = (e) => {
         if (e.key === "Enter") {
@@ -71,6 +66,13 @@ const ChatWindow: FC = () => {
                     className={`${!value ? 'hidden' : "cursor-pointer hover:opacity-50"} `}
                     alt="send"
                     width={45}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            sendMessage({ author: user, chat: chat, text: value })
+                            setValue("")
+                            fetchCha
+                        }
+                    }}
                     onClick={() => {
                         sendMessage({ author: user, chat: chat, text: value })
                         setValue("")

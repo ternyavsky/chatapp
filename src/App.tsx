@@ -13,18 +13,6 @@ import { useAuth } from './context/AuthContext'
 import UserWindow from './components/UserWindow'
 
 function App() {
-  const { user } = useAuth();
-  connectCall()
-  useEffect(() => {
-    socket.on("connectCall", (e) => {
-      user.online = e.online
-    })
-  }, [socket])
-
-  useBeforeUnload(() => {
-    disconnectCall()
-    user.online = false
-  })
 
   return (
     <>

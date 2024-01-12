@@ -3,7 +3,7 @@ import { IUser } from "@/shared/types/user.interface"
 import { io } from "socket.io-client"
 
 export const baseURL = "http://213.171.10.182:8000"
-// export const baseURL = "http://localhost:8000"
+// export const baseURL = "http://localhost:8000"s
 
 
 export const socket = io(baseURL, {
